@@ -3,7 +3,6 @@ import 'package:xcelpros/screens/animatedRoute.dart';
 import 'package:xcelpros/screens/bedRoom.dart';
 import 'package:xcelpros/screens/homePage.dart';
 import 'package:xcelpros/screens/loadingPage.dart';
-import 'package:xcelpros/screens/signinScreen/InputFields.dart';
 import 'package:xcelpros/screens/signupScreen/signup.dart';
 import 'package:xcelpros/utils/constants.dart';
 import 'package:xcelpros/utils/page_transition.dart';
@@ -45,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController usernameTextField = TextEditingController();
   TextEditingController passwordTextField = TextEditingController();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  bool isButtonEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -150,25 +150,49 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: new TextFormField(
+                      onChanged: (String value) {
+                        if (_formKey.currentState.validate()) {
+                          isButtonEnabled = true;
+                        } else {
+                          isButtonEnabled = false;
+                        }
+                        setState(() {});
+                      },
                       validator: Validations.validateName,
                       controller: usernameTextField,
                       decoration: InputDecoration(
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
                         icon: Image.asset(ImageNames.forUserName),
                         hintText: EngConstants.enterUserName,
                         labelText: 'Username',
+                        labelStyle: TextStyle(color: Colors.grey),
                       ),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: new TextFormField(
+                      onChanged: (String value) {
+                        if (_formKey.currentState.validate()) {
+                          isButtonEnabled = true;
+                        } else {
+                          isButtonEnabled = false;
+                        }
+                        setState(() {});
+                      },
                       validator: Validations.validatePassword,
                       controller: passwordTextField,
                       obscureText: true,
                       decoration: InputDecoration(
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
                         icon: Image.asset(ImageNames.passwordLockImg),
                         hintText: 'Enter Password',
                         labelText: 'Password',
+                        labelStyle: TextStyle(color: Colors.grey),
                       ),
                       keyboardType: TextInputType.datetime,
                     ),
@@ -199,20 +223,22 @@ class _MyHomePageState extends State<MyHomePage> {
           borderRadius: BorderRadius.circular(5),
         ),
         child: RaisedButton(
-          onPressed: () {
-            if (_formKey.currentState.validate()) {
-              print("validated");
-              // Navigator.pushNamed(context, Constants.ROUTE_LOADING);
-              Navigator.push(
-                context,
-                PageTransition(
-                  duration: Duration(milliseconds: 350),
-                  type: PageTransitionType.upToDown,
-                  child: LoadingPage(),
-                ),
-              );
-            }
-          },
+          onPressed: isButtonEnabled
+              ? () {
+                  if (_formKey.currentState.validate()) {
+                    print("validated");
+                    // Navigator.pushNamed(context, Constants.ROUTE_LOADING);
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        duration: Duration(milliseconds: 350),
+                        type: PageTransitionType.upToDown,
+                        child: LoadingPage(),
+                      ),
+                    );
+                  }
+                }
+              : null,
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5.0),
