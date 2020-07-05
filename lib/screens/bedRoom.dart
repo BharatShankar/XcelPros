@@ -344,7 +344,7 @@ class _BedRoomState extends State<BedRoom> {
           height: MediaQuery.of(context).size.width * 0.04,
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             scenesGrandients(_thirdBtnColors, "Relax"),
             scenesGrandients(_fourthBtnColors, "Fun"),
