@@ -17,6 +17,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController usernameTextField = TextEditingController();
   TextEditingController passwordTextField = TextEditingController();
   TextEditingController emailTextField = TextEditingController();
+  bool isButtonEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -88,13 +89,25 @@ class _SignUpState extends State<SignUp> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: new TextFormField(
+                            onChanged: (String value) {
+                              if (_formKey.currentState.validate() &&
+                                  isChecked == true) {
+                                isButtonEnabled = true;
+                              } else {
+                                isButtonEnabled = false;
+                              }
+                              setState(() {});
+                            },
                             validator: Validations.validateName,
                             controller: usernameTextField,
                             decoration: InputDecoration(
-                              icon: Image.asset(ImageNames.forUserName),
-                              hintText: EngConstants.enterUserName,
-                              labelText: 'Username',
-                            ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                icon: Image.asset(ImageNames.forUserName),
+                                hintText: EngConstants.enterUserName,
+                                labelText: 'Username',
+                                labelStyle: TextStyle(color: Colors.grey)),
                           ),
                         ),
                         Padding(
@@ -103,11 +116,23 @@ class _SignUpState extends State<SignUp> {
                             validator: Validations.validatePassword,
                             controller: passwordTextField,
                             obscureText: true,
+                            onChanged: (String value) {
+                              if (_formKey.currentState.validate() &&
+                                  isChecked == true) {
+                                isButtonEnabled = true;
+                              } else {
+                                isButtonEnabled = false;
+                              }
+                              setState(() {});
+                            },
                             decoration: InputDecoration(
-                              icon: Image.asset(ImageNames.passwordLockImg),
-                              hintText: 'Enter Password',
-                              labelText: 'Password',
-                            ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                icon: Image.asset(ImageNames.passwordLockImg),
+                                hintText: 'Enter Password',
+                                labelText: 'Password',
+                                labelStyle: TextStyle(color: Colors.grey)),
                             keyboardType: TextInputType.datetime,
                           ),
                         ),
@@ -116,11 +141,23 @@ class _SignUpState extends State<SignUp> {
                           child: new TextFormField(
                             validator: Validations.validateEmail,
                             controller: emailTextField,
+                            onChanged: (String value) {
+                              if (_formKey.currentState.validate() &&
+                                  isChecked == true) {
+                                isButtonEnabled = true;
+                              } else {
+                                isButtonEnabled = false;
+                              }
+                              setState(() {});
+                            },
                             decoration: InputDecoration(
-                              icon: Image.asset(ImageNames.emailImg),
-                              hintText: 'Enter Email',
-                              labelText: 'Email',
-                            ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                icon: Image.asset(ImageNames.emailImg),
+                                hintText: 'Enter Email',
+                                labelText: 'Email',
+                                labelStyle: TextStyle(color: Colors.grey)),
                             keyboardType: TextInputType.emailAddress,
                           ),
                         ),
@@ -183,9 +220,17 @@ class _SignUpState extends State<SignUp> {
             ),
             onPressed: () {
               if (isChecked) {
+                print("already true");
                 isChecked = false;
               } else {
+                print("came as false");
                 isChecked = true;
+              }
+
+              if (isChecked && _formKey.currentState.validate()) {
+                isButtonEnabled = true;
+              } else {
+                isButtonEnabled = false;
               }
               print(isChecked);
               setState(() {});
@@ -223,22 +268,6 @@ class _SignUpState extends State<SignUp> {
                 )
               ]),
         )
-        // Text.rich(
-        //   TextSpan(
-        //     text: title,
-        //     style: TextStyle(fontSize: 15, color: Colors.grey),
-        //     children: <TextSpan>[
-        //       TextSpan(
-        //           text: 'Terms & Conditions',
-        //           style: TextStyle(
-        //             color: buttonGreenColor,
-        //             fontWeight: FontWeight.bold,
-        //             decoration: TextDecoration.underline,
-        //           )),
-        //       // can add more TextSpans here...
-        //     ],
-        //   ),
-        // )
       ],
     );
   }
@@ -250,20 +279,26 @@ class _SignUpState extends State<SignUp> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: RaisedButton(
-        onPressed: () {
-          if (_formKey.currentState.validate()) {
-            print("validated");
-            // Navigator.pushNamed(context, Constants.ROUTE_LOADING);
-            Navigator.push(
-              context,
-              PageTransition(
-                duration: Duration(milliseconds: 350),
-                type: PageTransitionType.upToDown,
-                child: LoadingPage(),
-              ),
-            );
-          }
-        },
+        onPressed: isButtonEnabled
+            ? () {
+                if (_formKey.currentState.validate() && isChecked == true) {
+                  print("validated");
+                  if (isChecked) {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        duration: Duration(milliseconds: 350),
+                        type: PageTransitionType.upToDown,
+                        child: LoadingPage(),
+                      ),
+                    );
+                  } else {
+                    setState(() {});
+                    print("object");
+                  }
+                }
+              }
+            : null,
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.0),
