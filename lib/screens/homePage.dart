@@ -3,6 +3,7 @@ import 'package:xcelpros/screens/bedRoom.dart';
 import 'package:xcelpros/screens/main.dart';
 import 'package:xcelpros/utils/constants.dart';
 import 'package:xcelpros/utils/page_transition.dart';
+import 'package:toast/toast.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -104,10 +105,30 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Image.asset("assets/images/bulb.png"),
-                            Image.asset("assets/images/Icon feather-home.png"),
-                            Image.asset(
-                                "assets/images/Icon feather-settings.png")
+                            GestureDetector(
+                                onTap: () {
+                                  Toast.show("clicked on index 0", context,
+                                      duration: Toast.LENGTH_SHORT,
+                                      gravity: Toast.CENTER);
+                                },
+                                child: Image.asset("assets/images/bulb.png")),
+                            GestureDetector(
+                                onTap: () {
+                                  Toast.show("clicked on index 1", context,
+                                      duration: Toast.LENGTH_SHORT,
+                                      gravity: Toast.CENTER);
+                                },
+                                child: Image.asset(
+                                    "assets/images/Icon feather-home.png")),
+                            GestureDetector(
+                              onTap: () {
+                                Toast.show("clicked on index 2", context,
+                                    duration: Toast.LENGTH_SHORT,
+                                    gravity: Toast.CENTER);
+                              },
+                              child: Image.asset(
+                                  "assets/images/Icon feather-settings.png"),
+                            )
                           ],
                         ),
                       ))
