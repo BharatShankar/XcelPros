@@ -31,87 +31,90 @@ class _SignUpState extends State<SignUp> {
     var titleFontSize = MediaQuery.of(context).size.height * 0.028;
     final validationService = Provider.of<SignupValidation>(context);
     return Scaffold(
-      body: ChangeNotifierProvider(
-        create: (context) => SignupValidation(),
-        child: Column(
-          children: <Widget>[
-            Stack(
-              alignment: Alignment.topRight,
-              children: <Widget>[
-                Container(
-                  height: greenViewHeight,
-                  color: ColoNames.appThemeGreen,
-                ),
-                Positioned(
-                  left: leftSideSpace,
-                  top: topSideSpace,
-                  child: Row(
-                    children: <Widget>[
-                      Image.asset(ImageNames.signUpGreenImage),
-                      FlatButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            "Back",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 20),
-                          )),
-                    ],
-                  ),
-                ),
-                Positioned(
-                    right: 0, child: Image.asset(ImageNames.topBlocksImage)),
-                Positioned(
-                    left: leftSideSpace,
-                    bottom: bottomSpace,
-                    child: Text(
-                      EngConstants.newAccount,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: titleFontSize,
-                          fontWeight: FontWeight.w300),
-                    ))
-              ],
-            ),
-            Expanded(
-              child: Container(
+      body: Column(
+        children: <Widget>[
+          Stack(
+            alignment: Alignment.topRight,
+            children: <Widget>[
+              Container(
+                height: greenViewHeight,
                 color: ColoNames.appThemeGreen,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: new BorderRadius.only(
-                        topLeft: const Radius.circular(40.0),
-                        topRight: const Radius.circular(40.0),
-                      )),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Form(
-                      key: this._formKey,
-                      child: ListView(
-                        children: <Widget>[
-                          userNameWidget(validationService),
-                          passwordWidget(validationService),
-                          emailWidget(validationService),
-                          SizedBox(
-                            height: greenViewHeight * 0.45,
-                          ),
-                          checkbox("  I have accepted the ", false),
-                          SizedBox(
-                            height: greenViewHeight * 0.25,
-                          ),
-                          signUpButton(validationService),
-                        ],
-                      ),
+              ),
+              Positioned(
+                left: leftSideSpace,
+                top: topSideSpace,
+                child: Row(
+                  children: <Widget>[
+                    Image.asset(ImageNames.signUpGreenImage),
+                    FlatButton(
+                        onPressed: () {
+                          // Navigator.of(context).pop();
+
+                          Navigator.pop(context);
+                          //Navigator.popUntil(context, ("LoginPage") => false);
+                          // Navigator.of(context)
+                          //     .popUntil(ModalRoute.withName("LoginPage"));
+                        },
+                        child: Text(
+                          "Back",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 20),
+                        )),
+                  ],
+                ),
+              ),
+              Positioned(
+                  right: 0, child: Image.asset(ImageNames.topBlocksImage)),
+              Positioned(
+                  left: leftSideSpace,
+                  bottom: bottomSpace,
+                  child: Text(
+                    EngConstants.newAccount,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: titleFontSize,
+                        fontWeight: FontWeight.w300),
+                  ))
+            ],
+          ),
+          Expanded(
+            child: Container(
+              color: ColoNames.appThemeGreen,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: new BorderRadius.only(
+                      topLeft: const Radius.circular(40.0),
+                      topRight: const Radius.circular(40.0),
+                    )),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Form(
+                    key: this._formKey,
+                    child: ListView(
+                      children: <Widget>[
+                        userNameWidget(validationService),
+                        passwordWidget(validationService),
+                        emailWidget(validationService),
+                        SizedBox(
+                          height: greenViewHeight * 0.45,
+                        ),
+                        checkbox(
+                            "  I have accepted the ", false, validationService),
+                        SizedBox(
+                          height: greenViewHeight * 0.25,
+                        ),
+                        signUpButton(validationService),
+                      ],
                     ),
                   ),
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -171,6 +174,7 @@ class _SignUpState extends State<SignUp> {
           validationService.changeEmail(value);
         },
         decoration: InputDecoration(
+            errorText: validationService.useremail.error,
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
             ),
@@ -183,7 +187,8 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Widget checkbox(String title, bool boolValue) {
+  Widget checkbox(
+      String title, bool boolValue, SignupValidation validationService) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -197,24 +202,30 @@ class _SignUpState extends State<SignUp> {
               borderRadius: BorderRadius.circular(5.0),
             ),
             onPressed: () {
-              if (isChecked) {
-                print("already true");
-                isChecked = false;
-              } else {
-                print("came as false");
-                isChecked = true;
-              }
+              validationService.termsAndConditions(context, boolValue);
+              validationService.isCheckBoxChecked
+                  ? validationService.isCheckBoxChecked = false
+                  : validationService.isCheckBoxChecked = true;
+              // if (isChecked) {
+              //   print("already true");
+              //   isChecked = false;
+              // } else {
+              //   print("came as false");
+              //   isChecked = true;
+              // }
 
-              if (isChecked && _formKey.currentState.validate()) {
-                isButtonEnabled = true;
-              } else {
-                isButtonEnabled = false;
-              }
-              print(isChecked);
-              setState(() {});
-              print("clicked on checkbox");
+              // if (isChecked && _formKey.currentState.validate()) {
+              //   isButtonEnabled = true;
+              // } else {
+              //   isButtonEnabled = false;
+              // }
+              // print(isChecked);
+              // setState(() {});
+              // print("clicked on checkbox");
             },
-            color: isChecked ? ColoNames.buttonGreenColor : Colors.grey[350],
+            color: validationService.isCheckBoxChecked == true
+                ? ColoNames.buttonGreenColor
+                : Colors.grey[350],
           ),
         ),
         RichText(
@@ -229,7 +240,9 @@ class _SignUpState extends State<SignUp> {
                     isChecked = true;
                   }
                   print(isChecked);
-                  setState(() {});
+                  print("- - - - - ");
+                  validationService.isCheckBoxChecked = isChecked;
+                  // setState(() {});
                 },
               children: [
                 new TextSpan(
@@ -257,11 +270,14 @@ class _SignUpState extends State<SignUp> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: RaisedButton(
-        onPressed: () {
-          (!validationService.isValid)
-              ? null
-              : validationService.submitData(context);
-        },
+        onPressed: validationService.isValid
+            ? () {
+                // validationService.isValid != false &&
+                //         validationService.isCheckBoxChecked != false
+                //     ? null
+                //     : validationService.submitData(context);
+              }
+            : null,
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.0),
@@ -276,15 +292,15 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  void _validateInputs() {
-    if (_formKey.currentState.validate()) {
-//    If all data are correct then save data to out variables
-      _formKey.currentState.save();
-    } else {
-//    If all data are not valid then start auto validation.
-      setState(() {
-        // _autoValidate = true;
-      });
-    }
-  }
+//   void _validateInputs() {
+//     if (_formKey.currentState.validate()) {
+// //    If all data are correct then save data to out variables
+//       _formKey.currentState.save();
+//     } else {
+// //    If all data are not valid then start auto validation.
+//       setState(() {
+//         // _autoValidate = true;
+//       });
+//     }
+//   }
 }

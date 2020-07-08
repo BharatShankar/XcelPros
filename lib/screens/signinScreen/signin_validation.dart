@@ -4,25 +4,19 @@ import 'package:xcelpros/utils/constants.dart';
 
 import '../homePage.dart';
 
-class SignupValidation with ChangeNotifier {
+class SignInValidation with ChangeNotifier {
   ValidationItem _userName = ValidationItem(null, null);
   ValidationItem _password = ValidationItem(null, null);
-  ValidationItem _email = ValidationItem(null, null);
-  bool isCheckBoxChecked = false;
 
   //Getters
   ValidationItem get userName => _userName;
   ValidationItem get password => _password;
-  ValidationItem get useremail => _email;
 
   bool get isValid {
     if (_password.value != null &&
         Validations.validatePassword(_password.value) == null &&
         _userName.value != null &&
-        Validations.validatePassword(_userName.value) == null &&
-        _email.value != null &&
-        Validations.validatePassword(_email.value) == null &&
-        isCheckBoxChecked != true) {
+        Validations.validatePassword(_userName.value) == null) {
       return true;
     } else {
       return false;
@@ -48,29 +42,11 @@ class SignupValidation with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeEmail(String value) {
-    // Pattern pattern =
-    //     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    // RegExp regex = new RegExp(pattern);
-
-    if (Validations.validateEmail(value) != null) {
-      _email = ValidationItem(null, 'Enter Valid Email');
-    } else {
-      _email = ValidationItem(value, null);
-    }
-    notifyListeners();
-  }
-
   void submitData(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomePage()));
 
     notifyListeners();
-  }
-
-  void termsAndConditions(BuildContext context, bool isChecked) {
-    //isCheckBoxChecked = !isChecked;
-    print("this is checkboxvalue in provider $isCheckBoxChecked");
   }
 }
 

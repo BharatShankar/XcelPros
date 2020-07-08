@@ -3,9 +3,12 @@ import 'package:xcelpros/screens/animatedRoute.dart';
 import 'package:xcelpros/screens/bedRoom.dart';
 import 'package:xcelpros/screens/homePage.dart';
 import 'package:xcelpros/screens/loadingPage.dart';
+import 'package:xcelpros/screens/signinScreen/signin_validation.dart';
+import 'package:xcelpros/screens/signupScreen/SignupImplementation.dart';
 import 'package:xcelpros/screens/signupScreen/signup.dart';
 import 'package:xcelpros/utils/constants.dart';
 import 'package:xcelpros/utils/page_transition.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,18 +18,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => SignInValidation(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: MyHomePage(title: 'Flutter Demo Home Page'),
+        routes: {
+          Constants.ROUTE_LOADING: (context) => LoadingPage(),
+          Constants.ROUTE_HOME: (context) => HomePage(),
+          Constants.ROUTE_BED_ROOM: (context) => BedRoom(),
+        },
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-      routes: {
-        Constants.ROUTE_LOADING: (context) => LoadingPage(),
-        Constants.ROUTE_HOME: (context) => HomePage(),
-        Constants.ROUTE_BED_ROOM: (context) => BedRoom(),
-      },
     );
   }
 }
@@ -271,7 +277,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       curve: Curves.ease,
                       duration: Duration(milliseconds: 400),
                       type: PageTransitionType.size,
-                      child: SignUp()));
+                      child: SignupLess()));
               // Navigator.push(context, ScaleRoute(widget: SignUp()));
             },
             child: Text(
