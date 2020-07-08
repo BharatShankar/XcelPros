@@ -5,6 +5,9 @@ import 'package:xcelpros/screens/loadingPage.dart';
 import 'package:xcelpros/screens/main.dart';
 import 'package:xcelpros/utils/constants.dart';
 import 'package:xcelpros/utils/page_transition.dart';
+import 'package:provider/provider.dart';
+
+import 'signup_validation.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -26,184 +29,159 @@ class _SignUpState extends State<SignUp> {
     var topSideSpace = MediaQuery.of(context).size.height * 0.034;
     var bottomSpace = MediaQuery.of(context).size.height * 0.027;
     var titleFontSize = MediaQuery.of(context).size.height * 0.028;
+    final validationService = Provider.of<SignupValidation>(context);
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Stack(
-            alignment: Alignment.topRight,
-            children: <Widget>[
-              Container(
-                height: greenViewHeight,
-                color: ColoNames.appThemeGreen,
-              ),
-              Positioned(
-                left: leftSideSpace,
-                top: topSideSpace,
-                child: Row(
-                  children: <Widget>[
-                    Image.asset(ImageNames.signUpGreenImage),
-                    FlatButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Back",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 20),
-                        )),
-                  ],
+      body: ChangeNotifierProvider(
+        create: (context) => SignupValidation(),
+        child: Column(
+          children: <Widget>[
+            Stack(
+              alignment: Alignment.topRight,
+              children: <Widget>[
+                Container(
+                  height: greenViewHeight,
+                  color: ColoNames.appThemeGreen,
                 ),
-              ),
-              Positioned(
-                  right: 0, child: Image.asset(ImageNames.topBlocksImage)),
-              Positioned(
+                Positioned(
                   left: leftSideSpace,
-                  bottom: bottomSpace,
-                  child: Text(
-                    EngConstants.newAccount,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: titleFontSize,
-                        fontWeight: FontWeight.w300),
-                  ))
-            ],
-          ),
-          Expanded(
-            child: Container(
-              color: ColoNames.appThemeGreen,
+                  top: topSideSpace,
+                  child: Row(
+                    children: <Widget>[
+                      Image.asset(ImageNames.signUpGreenImage),
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Back",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 20),
+                          )),
+                    ],
+                  ),
+                ),
+                Positioned(
+                    right: 0, child: Image.asset(ImageNames.topBlocksImage)),
+                Positioned(
+                    left: leftSideSpace,
+                    bottom: bottomSpace,
+                    child: Text(
+                      EngConstants.newAccount,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: titleFontSize,
+                          fontWeight: FontWeight.w300),
+                    ))
+              ],
+            ),
+            Expanded(
               child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: new BorderRadius.only(
-                      topLeft: const Radius.circular(40.0),
-                      topRight: const Radius.circular(40.0),
-                    )),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Form(
-                    key: this._formKey,
-                    child: ListView(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: new TextFormField(
-                            onChanged: (String value) {
-                              if (_formKey.currentState.validate() &&
-                                  isChecked == true) {
-                                isButtonEnabled = true;
-                              } else {
-                                isButtonEnabled = false;
-                              }
-                              setState(() {});
-                            },
-                            validator: Validations.validateName,
-                            controller: usernameTextField,
-                            decoration: InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                icon: Image.asset(ImageNames.forUserName),
-                                hintText: EngConstants.enterUserName,
-                                labelText: 'Username',
-                                labelStyle: TextStyle(color: Colors.grey)),
+                color: ColoNames.appThemeGreen,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: new BorderRadius.only(
+                        topLeft: const Radius.circular(40.0),
+                        topRight: const Radius.circular(40.0),
+                      )),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Form(
+                      key: this._formKey,
+                      child: ListView(
+                        children: <Widget>[
+                          userNameWidget(validationService),
+                          passwordWidget(validationService),
+                          emailWidget(validationService),
+                          SizedBox(
+                            height: greenViewHeight * 0.45,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: new TextFormField(
-                            validator: Validations.validatePassword,
-                            controller: passwordTextField,
-                            obscureText: true,
-                            onChanged: (String value) {
-                              if (_formKey.currentState.validate() &&
-                                  isChecked == true) {
-                                isButtonEnabled = true;
-                              } else {
-                                isButtonEnabled = false;
-                              }
-                              setState(() {});
-                            },
-                            decoration: InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                icon: Image.asset(ImageNames.passwordLockImg),
-                                hintText: 'Enter Password',
-                                labelText: 'Password',
-                                labelStyle: TextStyle(color: Colors.grey)),
-                            keyboardType: TextInputType.datetime,
+                          checkbox("  I have accepted the ", false),
+                          SizedBox(
+                            height: greenViewHeight * 0.25,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: new TextFormField(
-                            validator: Validations.validateEmail,
-                            controller: emailTextField,
-                            onChanged: (String value) {
-                              if (_formKey.currentState.validate() &&
-                                  isChecked == true) {
-                                isButtonEnabled = true;
-                              } else {
-                                isButtonEnabled = false;
-                              }
-                              setState(() {});
-                            },
-                            decoration: InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                icon: Image.asset(ImageNames.emailImg),
-                                hintText: 'Enter Email',
-                                labelText: 'Email',
-                                labelStyle: TextStyle(color: Colors.grey)),
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                        ),
-                        SizedBox(
-                          height: greenViewHeight * 0.45,
-                        ),
-                        checkbox("  I have accepted the ", false),
-                        SizedBox(
-                          height: greenViewHeight * 0.25,
-                        ),
-                        signUpButton(),
-                      ],
+                          signUpButton(validationService),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
 
-  // String validateName(String value) {
-  //   if (value.length < 3)
-  //     return 'Name must be more than 2 charater';
-  //   else
-  //     return null;
-  // }
+  Widget userNameWidget(SignupValidation validationService) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new TextField(
+        onChanged: (String value) {
+          validationService.changeUserName(value);
+        },
+        controller: usernameTextField,
+        decoration: InputDecoration(
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            icon: Image.asset(ImageNames.forUserName),
+            errorText: validationService.userName.error,
+            hintText: EngConstants.enterUserName,
+            labelText: 'Username',
+            labelStyle: TextStyle(color: Colors.grey)),
+      ),
+    );
+  }
 
-  // String validatePassword(String value) {
-  //   if (value.length < 3)
-  //     return 'Password must be more than 2 charater';
-  //   else
-  //     return null;
-  // }
+  Widget passwordWidget(SignupValidation validationService) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new TextFormField(
+        validator: Validations.validatePassword,
+        controller: passwordTextField,
+        obscureText: true,
+        onChanged: (String value) {
+          validationService.changePassword(value);
+        },
+        decoration: InputDecoration(
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            icon: Image.asset(ImageNames.passwordLockImg),
+            errorText: validationService.password.error,
+            hintText: 'Enter Password',
+            labelText: 'Password',
+            labelStyle: TextStyle(color: Colors.grey)),
+        keyboardType: TextInputType.datetime,
+      ),
+    );
+  }
 
-  // String validateEmail(String value) {
-  //   Pattern pattern =
-  //       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-  //   RegExp regex = new RegExp(pattern);
-  //   if (!regex.hasMatch(value))
-  //     return 'Enter Valid Email';
-  //   else
-  //     return null;
-  // }
+  Widget emailWidget(SignupValidation validationService) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new TextFormField(
+        validator: Validations.validateEmail,
+        controller: emailTextField,
+        onChanged: (String value) {
+          validationService.changeEmail(value);
+        },
+        decoration: InputDecoration(
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            icon: Image.asset(ImageNames.emailImg),
+            hintText: 'Enter Email',
+            labelText: 'Email',
+            labelStyle: TextStyle(color: Colors.grey)),
+        keyboardType: TextInputType.emailAddress,
+      ),
+    );
+  }
 
   Widget checkbox(String title, bool boolValue) {
     return Row(
@@ -272,33 +250,18 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Widget signUpButton() {
+  Widget signUpButton(SignupValidation validationService) {
     return new Container(
       height: 55,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
       ),
       child: RaisedButton(
-        onPressed: isButtonEnabled
-            ? () {
-                if (_formKey.currentState.validate() && isChecked == true) {
-                  print("validated");
-                  if (isChecked) {
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        duration: Duration(milliseconds: 350),
-                        type: PageTransitionType.upToDown,
-                        child: LoadingPage(),
-                      ),
-                    );
-                  } else {
-                    setState(() {});
-                    print("object");
-                  }
-                }
-              }
-            : null,
+        onPressed: () {
+          (!validationService.isValid)
+              ? null
+              : validationService.submitData(context);
+        },
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.0),
