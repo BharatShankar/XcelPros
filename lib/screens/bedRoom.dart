@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
+import 'package:xcelpros/screens/bedRoom/bedRoomProvider.dart';
 import 'package:xcelpros/screens/main.dart';
 import 'package:xcelpros/utils/constants.dart';
 
@@ -48,6 +50,7 @@ class _BedRoomState extends State<BedRoom> {
     double greenAreaHeight = MediaQuery.of(context).size.height * 0.32;
     var whiteAreaHeight = MediaQuery.of(context).size.height * 0.67;
     var greenAreaWidth = MediaQuery.of(context).size.width;
+    final bedRoomService = Provider.of<BedRoomProvider>(context);
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -107,7 +110,8 @@ class _BedRoomState extends State<BedRoom> {
                         height: 11,
                         width: 20,
                         decoration: new BoxDecoration(
-                            color: defaltColor.withOpacity(_value),
+                            color: bedRoomService.selectedColor.withOpacity(
+                                bedRoomService?.intensityValue ?? 1.0),
                             borderRadius: new BorderRadius.only(
                               bottomLeft: const Radius.circular(20.0),
                               bottomRight: const Radius.circular(20.0),
@@ -196,7 +200,7 @@ class _BedRoomState extends State<BedRoom> {
                           padding: const EdgeInsets.only(
                             top: 20,
                           ),
-                          child: bulbColorController(),
+                          child: bulbColorController(bedRoomService),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 30, top: 30),
@@ -208,7 +212,7 @@ class _BedRoomState extends State<BedRoom> {
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
-                        colorCircles(),
+                        colorCircles(bedRoomService),
                         spaceWidget(),
                         screensWidget(),
                         spaceWidget(),
@@ -311,30 +315,30 @@ class _BedRoomState extends State<BedRoom> {
     );
   }
 
-  Widget colorCircles() {
+  Widget colorCircles(BedRoomProvider bedRoomService) {
     return Wrap(
       children: <Widget>[
-        selectClorLight(0, listOfColors[0]),
+        selectClorLight(0, listOfColors[0], bedRoomService),
         SizedBox(
           width: 15,
         ),
-        selectClorLight(1, listOfColors[1]),
+        selectClorLight(1, listOfColors[1], bedRoomService),
         SizedBox(
           width: 15,
         ),
-        selectClorLight(2, listOfColors[2]),
+        selectClorLight(2, listOfColors[2], bedRoomService),
         SizedBox(
           width: 15,
         ),
-        selectClorLight(3, listOfColors[3]),
+        selectClorLight(3, listOfColors[3], bedRoomService),
         SizedBox(
           width: 15,
         ),
-        selectClorLight(4, listOfColors[4]),
+        selectClorLight(4, listOfColors[4], bedRoomService),
         SizedBox(
           width: 15,
         ),
-        selectClorLight(5, listOfColors[5]),
+        selectClorLight(5, listOfColors[5], bedRoomService),
       ],
     );
   }
@@ -407,13 +411,15 @@ class _BedRoomState extends State<BedRoom> {
     );
   }
 
-  Widget selectClorLight(int index, Color choosedColor) {
+  Widget selectClorLight(
+      int index, Color choosedColor, BedRoomProvider bedRoomService) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          print("object");
-          defaltColor = listOfColors[index];
-        });
+        bedRoomService.changeLampColor(listOfColors[index]);
+        // setState(() {
+        //   print("object");
+        //   defaltColor = listOfColors[index];
+        // });
       },
       child: Container(
         height: MediaQuery.of(context).size.width * 0.1,
@@ -452,7 +458,7 @@ class _BedRoomState extends State<BedRoom> {
     );
   }
 
-  Widget bulbColorController() {
+  Widget bulbColorController(BedRoomProvider bedRoomService) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -474,9 +480,11 @@ class _BedRoomState extends State<BedRoom> {
               max: 1,
               value: _value,
               onChanged: (value) {
-                setState(() {
-                  _value = value;
-                });
+                bedRoomService.lightIntensity(value);
+                _value = bedRoomService.intensityValue;
+                // setState(() {
+                //   _value = value;
+                // });
               },
             ),
           ),

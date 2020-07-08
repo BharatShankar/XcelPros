@@ -6,7 +6,6 @@ import 'package:xcelpros/screens/main.dart';
 import 'package:xcelpros/utils/constants.dart';
 import 'package:xcelpros/utils/page_transition.dart';
 import 'package:provider/provider.dart';
-
 import 'signup_validation.dart';
 
 class SignUp extends StatefulWidget {
@@ -117,6 +116,11 @@ class _SignUpState extends State<SignUp> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Widget userNameWidget(SignupValidation validationService) {
@@ -276,6 +280,7 @@ class _SignUpState extends State<SignUp> {
                 //         validationService.isCheckBoxChecked != false
                 //     ? null
                 //     : validationService.submitData(context);
+                validationService.submitData(context);
               }
             : null,
         elevation: 4,

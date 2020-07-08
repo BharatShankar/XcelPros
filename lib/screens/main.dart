@@ -54,11 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final validationService = Provider.of<SignInValidation>(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Column(
-          children: <Widget>[topGreenPart(), bottomPart()],
+          children: <Widget>[topGreenPart(), bottomPart(validationService)],
         ),
       ),
     );
@@ -113,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget bottomPart() {
+  Widget bottomPart(SignInValidation validationService) {
     return Container(
       color: ColoNames.appThemeGreen,
       height: MediaQuery.of(context).size.height * 0.5,
@@ -128,8 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: const EdgeInsets.only(top: 0, left: 10, right: 10),
           child: ListView(
             children: <Widget>[
-              formContainer(),
-              signinButton(),
+              formContainer(validationService),
+              signinButton(validationService),
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: signUpRow(),
@@ -141,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget formContainer() {
+  Widget formContainer(SignInValidation validationService) {
     return Container(
       //color: Color(0xff393939),
       margin: new EdgeInsets.symmetric(horizontal: 20.0),
@@ -157,16 +158,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: new TextFormField(
                       onChanged: (String value) {
-                        if (_formKey.currentState.validate()) {
-                          isButtonEnabled = true;
-                        } else {
-                          isButtonEnabled = false;
-                        }
-                        setState(() {});
+                        validationService.changeUserName(value);
+                        // if (_formKey.currentState.validate()) {
+                        //   isButtonEnabled = true;
+                        // } else {
+                        //   isButtonEnabled = false;
+                        // }
+                        // setState(() {});
                       },
                       validator: Validations.validateName,
                       controller: usernameTextField,
                       decoration: InputDecoration(
+                        errorText: validationService.userName.error,
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
@@ -181,17 +184,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: new TextFormField(
                       onChanged: (String value) {
-                        if (_formKey.currentState.validate()) {
-                          isButtonEnabled = true;
-                        } else {
-                          isButtonEnabled = false;
-                        }
-                        setState(() {});
+                        validationService.changePassword(value);
+                        // if (_formKey.currentState.validate()) {
+                        //   isButtonEnabled = true;
+                        // } else {
+                        //   isButtonEnabled = false;
+                        // }
+                        // setState(() {});
                       },
                       validator: Validations.validatePassword,
                       controller: passwordTextField,
                       obscureText: true,
                       decoration: InputDecoration(
+                        errorText: validationService.password.error,
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
@@ -220,7 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget signinButton() {
+  Widget signinButton(SignInValidation validationService) {
     return Padding(
       padding: const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 20),
       child: new Container(
@@ -229,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
           borderRadius: BorderRadius.circular(5),
         ),
         child: RaisedButton(
-          onPressed: isButtonEnabled
+          onPressed: validationService.isValid //isButtonEnabled
               ? () {
                   if (_formKey.currentState.validate()) {
                     print("validated");

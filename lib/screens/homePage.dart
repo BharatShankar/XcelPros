@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xcelpros/screens/bedRoom.dart';
+import 'package:xcelpros/screens/bedRoom/bedRoomStateles.dart';
 import 'package:xcelpros/screens/main.dart';
 import 'package:xcelpros/utils/constants.dart';
 import 'package:xcelpros/utils/page_transition.dart';
@@ -179,7 +180,7 @@ class _HomePageState extends State<HomePage> {
               PageTransition(
                 duration: Duration(milliseconds: 400),
                 type: PageTransitionType.fade,
-                child: BedRoom(),
+                child: BedRoomStateLess(),
               ),
             );
             // Navigator.pushNamed(context, Constants.ROUTE_BED_ROOM);
