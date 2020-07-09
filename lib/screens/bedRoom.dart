@@ -86,6 +86,7 @@ class _BedRoomState extends State<BedRoom> {
                     top: MediaQuery.of(context).size.width * 0.065,
                     child: GestureDetector(
                       onTap: () {
+                        print("poping back");
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -274,13 +275,16 @@ class _BedRoomState extends State<BedRoom> {
   }
 
   Widget greenInvivibleCircles(double greenAreaHeight, double greenAreaWidth) {
-    return Container(
-      height: greenAreaHeight,
-      width: greenAreaWidth,
-      color: ColoNames.appThemeGreen,
-      child: Image.asset(
-        "assets/images/Group 63.png",
-        fit: BoxFit.cover,
+    return Hero(
+      tag: "GreenHero",
+      child: Container(
+        height: greenAreaHeight,
+        width: greenAreaWidth,
+        color: ColoNames.appThemeGreen,
+        child: Image.asset(
+          "assets/images/Group 63.png",
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

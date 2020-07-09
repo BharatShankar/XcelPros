@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xcelpros/screens/animatedRoute.dart';
 import 'package:xcelpros/screens/bedRoom.dart';
+import 'package:xcelpros/screens/bedRoom/bedRoomStateles.dart';
 import 'package:xcelpros/screens/homePage.dart';
 import 'package:xcelpros/screens/loadingPage.dart';
 import 'package:xcelpros/screens/signinScreen/signin_validation.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         routes: {
           Constants.ROUTE_LOADING: (context) => LoadingPage(),
           Constants.ROUTE_HOME: (context) => HomePage(),
-          Constants.ROUTE_BED_ROOM: (context) => BedRoom(),
+          Constants.ROUTE_BED_ROOM: (context) => BedRoomStateLess(),
         },
       ),
     );

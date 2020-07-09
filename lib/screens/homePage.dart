@@ -35,13 +35,16 @@ class _HomePageState extends State<HomePage> {
           Stack(
             alignment: Alignment.center,
             children: <Widget>[
-              Container(
-                height: greenViewHeight,
-                color: ColoNames.appThemeGreen,
-                width: greenViewWidth,
-                child: Image.asset(
-                  "assets/images/Group 63.png",
-                  fit: BoxFit.cover,
+              Hero(
+                tag: "GreenHero",
+                child: Container(
+                  height: greenViewHeight,
+                  color: ColoNames.appThemeGreen,
+                  width: greenViewWidth,
+                  child: Image.asset(
+                    "assets/images/Group 63.png",
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               Positioned(
@@ -183,17 +186,21 @@ class _HomePageState extends State<HomePage> {
         onTap: () {
           if (index == 0) {
             print("object");
-            // Navigator.of(context).pushReplacement(MaterialPageRoute(
-            //     builder: (BuildContext context) => BedRoom()));
-            Navigator.push(
-              context,
-              PageTransition(
-                duration: Duration(milliseconds: 400),
-                type: PageTransitionType.fade,
-                child: BedRoomStateLess(),
-              ),
-            );
-            // Navigator.pushNamed(context, Constants.ROUTE_BED_ROOM);
+
+            // Navigator.push(
+            //   context,
+            //   PageTransition(
+            //     duration: Duration(milliseconds: 400),
+            //     type: PageTransitionType.fade,
+            //     child: BedRoomStateLess(),
+            //   ),
+            // );
+
+            // Navigator.of(context)
+            //     .push(SlideRightRoute(page: BedRoomStateLess()));
+            // Navigator.push(context,
+            //     MaterialPageRoute(builder: (context) => BedRoomStateLess()));
+            Navigator.pushNamed(context, Constants.ROUTE_BED_ROOM);
           } else {}
         },
         child: Container(

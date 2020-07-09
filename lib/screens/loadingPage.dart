@@ -10,16 +10,17 @@ import 'package:xcelpros/utils/page_transition.dart';
 class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Timer(
-        Duration(seconds: 3),
-        () => Navigator.push(
-              context,
-              PageTransition(
-                duration: Duration(milliseconds: 400),
-                type: PageTransitionType.downToUp,
-                child: HomePage(),
-              ),
-            )
+    Timer(Duration(seconds: 2),
+        () => Navigator.pushNamed(context, Constants.ROUTE_HOME)
+        // Navigator.push(
+        //       context,
+        //       PageTransition(
+        //         duration: Duration(milliseconds: 400),
+        //         type: PageTransitionType.downToUp,
+        //         child: HomePage(),
+        //       ),
+        //     )
+
         // Navigator.of(context).pushReplacement(
         //     MaterialPageRoute(builder: (BuildContext context) => HomePage()))
         );
