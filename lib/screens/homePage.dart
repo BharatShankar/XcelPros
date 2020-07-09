@@ -13,6 +13,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var titleLeftPosition = MediaQuery.of(context).size.width * 0.07;
     var titleFontSize = MediaQuery.of(context).size.width * 0.085;

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:xcelpros/screens/signupScreen/signup.dart';
 import 'package:xcelpros/screens/signupScreen/signup_validation.dart';
 
-class SignupLess extends StatelessWidget {
+class SignupStateLess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(

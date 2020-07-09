@@ -45,6 +45,17 @@ class _BedRoomState extends State<BedRoom> {
     Color(0xffDE94EB),
     Color(0xffEBD094)
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double greenAreaHeight = MediaQuery.of(context).size.height * 0.32;
@@ -355,7 +366,6 @@ class _BedRoomState extends State<BedRoom> {
     return Column(
       children: <Widget>[
         Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             scenesGrandients(_colors, "Birthday"),
             scenesGrandients(_secondBtnColors, "Party"),
@@ -365,7 +375,6 @@ class _BedRoomState extends State<BedRoom> {
           height: MediaQuery.of(context).size.width * 0.04,
         ),
         Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             scenesGrandients(_thirdBtnColors, "Relax"),
             scenesGrandients(_fourthBtnColors, "Fun"),
@@ -416,10 +425,6 @@ class _BedRoomState extends State<BedRoom> {
     return GestureDetector(
       onTap: () {
         bedRoomService.changeLampColor(listOfColors[index]);
-        // setState(() {
-        //   print("object");
-        //   defaltColor = listOfColors[index];
-        // });
       },
       child: Container(
         height: MediaQuery.of(context).size.width * 0.1,
@@ -482,9 +487,6 @@ class _BedRoomState extends State<BedRoom> {
               onChanged: (value) {
                 bedRoomService.lightIntensity(value);
                 _value = bedRoomService.intensityValue;
-                // setState(() {
-                //   _value = value;
-                // });
               },
             ),
           ),

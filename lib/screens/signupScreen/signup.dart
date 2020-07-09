@@ -119,6 +119,11 @@ class _SignUpState extends State<SignUp> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }

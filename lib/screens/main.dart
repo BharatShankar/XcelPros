@@ -282,7 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       curve: Curves.ease,
                       duration: Duration(milliseconds: 400),
                       type: PageTransitionType.size,
-                      child: SignupLess()));
+                      child: SignupStateLess()));
               // Navigator.push(context, ScaleRoute(widget: SignUp()));
             },
             child: Text(
