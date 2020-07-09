@@ -22,7 +22,7 @@ class SignupValidation with ChangeNotifier {
         Validations.validatePassword(_userName.value) == null &&
         _email.value != null &&
         Validations.validatePassword(_email.value) == null &&
-        isCheckBoxChecked != true) {
+        isCheckBoxChecked == true) {
       return true;
     } else {
       return false;
@@ -68,8 +68,14 @@ class SignupValidation with ChangeNotifier {
     notifyListeners();
   }
 
-  void termsAndConditions(BuildContext context, bool isChecked) {
+  void termsAndConditions(BuildContext context) {
     //isCheckBoxChecked = !isChecked;
+    if (isCheckBoxChecked == true) {
+      isCheckBoxChecked = false;
+    } else {
+      isCheckBoxChecked = true;
+    }
+    notifyListeners();
     print("this is checkboxvalue in provider $isCheckBoxChecked");
   }
 }

@@ -125,6 +125,9 @@ class _SignUpState extends State<SignUp> {
 
   @override
   void dispose() {
+    usernameTextField.dispose();
+    passwordTextField.dispose();
+    emailTextField.dispose();
     super.dispose();
   }
 
@@ -211,10 +214,10 @@ class _SignUpState extends State<SignUp> {
               borderRadius: BorderRadius.circular(5.0),
             ),
             onPressed: () {
-              validationService.termsAndConditions(context, boolValue);
-              validationService.isCheckBoxChecked
-                  ? validationService.isCheckBoxChecked = false
-                  : validationService.isCheckBoxChecked = true;
+              validationService.termsAndConditions(context);
+              // validationService.isCheckBoxChecked
+              //     ? validationService.isCheckBoxChecked = false
+              //     : validationService.isCheckBoxChecked = true;
               // if (isChecked) {
               //   print("already true");
               //   isChecked = false;
@@ -250,7 +253,7 @@ class _SignUpState extends State<SignUp> {
                   }
                   print(isChecked);
                   print("- - - - - ");
-                  validationService.isCheckBoxChecked = isChecked;
+                  //validationService.isCheckBoxChecked = isChecked;
                   // setState(() {});
                 },
               children: [

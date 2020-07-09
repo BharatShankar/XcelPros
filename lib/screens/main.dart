@@ -53,6 +53,19 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isButtonEnabled = false;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    usernameTextField.dispose();
+    passwordTextField.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final validationService = Provider.of<SignInValidation>(context);
     return Scaffold(
@@ -159,12 +172,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: new TextFormField(
                       onChanged: (String value) {
                         validationService.changeUserName(value);
-                        // if (_formKey.currentState.validate()) {
-                        //   isButtonEnabled = true;
-                        // } else {
-                        //   isButtonEnabled = false;
-                        // }
-                        // setState(() {});
                       },
                       validator: Validations.validateName,
                       controller: usernameTextField,
@@ -185,12 +192,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: new TextFormField(
                       onChanged: (String value) {
                         validationService.changePassword(value);
-                        // if (_formKey.currentState.validate()) {
-                        //   isButtonEnabled = true;
-                        // } else {
-                        //   isButtonEnabled = false;
-                        // }
-                        // setState(() {});
                       },
                       validator: Validations.validatePassword,
                       controller: passwordTextField,
@@ -208,16 +209,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       keyboardType: TextInputType.datetime,
                     ),
                   ),
-                  // InputFieldArea(
-                  //   hint: EngConstants.userName,
-                  //   obscure: false,
-                  //   icon: Icons.person_outline,
-                  // ),
-                  // InputFieldArea(
-                  //   hint: EngConstants.password,
-                  //   obscure: true,
-                  //   icon: Icons.lock_outline,
-                  // ),
                 ],
               )),
         ],
