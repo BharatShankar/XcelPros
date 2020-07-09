@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
@@ -10,7 +12,46 @@ class BedRoom extends StatefulWidget {
   _BedRoomState createState() => _BedRoomState();
 }
 
-class _BedRoomState extends State<BedRoom> {
+class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
+  static const FACE_LEFT_ANGLE = -pi / 2 * 1000;
+  static const FACE_RIGHT_ANGLE = pi / 2 * 1000;
+
+  AnimationController _controller;
+  Animation _animation;
+  double WIDTH_OF_LIGHTS_MENU;
+  double _angle = FACE_RIGHT_ANGLE;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller =
+        new AnimationController(duration: new Duration(seconds: 1), vsync: this)
+          ..addListener(() {
+            this.setState(() {});
+          })
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              print("animation completed");
+              WIDTH_OF_LIGHTS_MENU = 1.0;
+              // _controller.reverse();
+              // _angle = FACE_LEFT_ANGLE;
+            } else if (status == AnimationStatus.dismissed) {
+              _controller.forward();
+              _angle = FACE_RIGHT_ANGLE;
+            }
+          });
+
+    Tween _tween = new AlignmentTween(
+      end: new Alignment(-1.0, 0.0),
+      begin: new Alignment(1.0, 0.0),
+    );
+
+    _animation = _tween.animate(_controller);
+
+    _controller.forward();
+  }
+
   double _value = 1;
   Color defaltColor = Colors.yellow;
   var typesOfLights = ["Main light", "Desk lights", "Bed light"];
@@ -47,12 +88,8 @@ class _BedRoomState extends State<BedRoom> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
@@ -142,54 +179,65 @@ class _BedRoomState extends State<BedRoom> {
                   Positioned(
                       left: 20,
                       top: MediaQuery.of(context).size.height * 0.2,
-                      child: new Container(
+                      child: Container(
                           margin: EdgeInsets.symmetric(vertical: 20.0),
                           height: MediaQuery.of(context).size.width * 0.12,
                           width: MediaQuery.of(context).size.width - 20,
-                          child: new ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: <Widget>[
-                              lightsCollectionView(
-                                  imagesOfLights[0], typesOfLights[0]),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                          child: FractionallySizedBox(
+                              heightFactor: 1,
+                              widthFactor: _animation.isCompleted ? 1 : 0.43,
+                              alignment: _animation.value,
+                              child: Transform.rotate(
+                                angle: _angle,
+                                child: new ListView(
+                                  scrollDirection: Axis.horizontal,
                                   children: <Widget>[
-                                    Image.asset(
-                                      imagesOfLights[1],
-                                      color: Colors.white,
+                                    lightsCollectionView(
+                                        imagesOfLights[0], typesOfLights[0]),
+                                    SizedBox(
+                                      width: 10,
                                     ),
-                                    Text(
-                                      typesOfLights[1],
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold),
+                                    Container(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          Image.asset(
+                                            imagesOfLights[1],
+                                            color: Colors.white,
+                                          ),
+                                          Text(
+                                            typesOfLights[1],
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ],
+                                      ),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.02),
+                                          color: ColoNames.buttonGreenColor),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    lightsCollectionView(
+                                        imagesOfLights[2], typesOfLights[2]),
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.3,
                                     )
                                   ],
                                 ),
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        MediaQuery.of(context).size.width *
-                                            0.02),
-                                    color: ColoNames.buttonGreenColor),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              lightsCollectionView(
-                                  imagesOfLights[2], typesOfLights[2]),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.3,
-                              )
-                            ],
-                          )))
+                              ))))
                 ],
               ),
               Container(
@@ -236,7 +284,7 @@ class _BedRoomState extends State<BedRoom> {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
           Container(
