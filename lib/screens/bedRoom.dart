@@ -20,9 +20,15 @@ class _BedRoomState extends State<BedRoom> with TickerProviderStateMixin {
   Animation<Offset> _lampOffset;
   double slideValue = 0.0;
   double gradientSpace = 0.0;
+
   @override
   void initState() {
     super.initState();
+    lightsMenuAnimation();
+    lampAnimation();
+  }
+
+  void lightsMenuAnimation() {
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -36,8 +42,6 @@ class _BedRoomState extends State<BedRoom> with TickerProviderStateMixin {
     ));
     _controller.addStatusListener(animationStatusListener);
     _controller.forward();
-
-    lampAnimation();
   }
 
   void lampAnimation() {
@@ -63,18 +67,12 @@ class _BedRoomState extends State<BedRoom> with TickerProviderStateMixin {
         slideValue = 1.0;
         gradientSpace = MediaQuery.of(context).size.width * 0.04;
       });
-    } else if (status == AnimationStatus.dismissed) {
-      //_controller.forward();
-      // _controller.reverse();
-    }
+    } else if (status == AnimationStatus.dismissed) {}
   }
 
   void animationStatusListener(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      // _controller.reverse();
-    } else if (status == AnimationStatus.dismissed) {
-      //_controller.forward();
-    }
+    } else if (status == AnimationStatus.dismissed) {}
   }
 
   double _value = 1;
@@ -385,7 +383,7 @@ class _BedRoomState extends State<BedRoom> with TickerProviderStateMixin {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Image.asset(
-                "assets/images/Icon awesome-power-off.png",
+                ImageNames.powerBtnImg,
                 fit: BoxFit.fill,
               ),
             ),
@@ -502,7 +500,7 @@ class _BedRoomState extends State<BedRoom> with TickerProviderStateMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Image.asset("assets/images/surface1.png"),
+          Image.asset(ImageNames.gradientIconImg),
           Text(
             title,
             style: TextStyle(

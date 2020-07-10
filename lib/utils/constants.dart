@@ -18,6 +18,8 @@ class ImageNames {
   static const String forUserName = 'assets/images/Icon feather-user.png';
   static const String passwordLockImg = 'assets/images/Icon feather-lock.png';
   static const String emailImg = 'assets/images/Icon feather-mail.png';
+  static const String gradientIconImg = "assets/images/surface1.png";
+  static const String powerBtnImg = "assets/images/Icon awesome-power-off.png";
 
   //signup images
   static const String signUpGreenImage = 'assets/images/Group 62.png';
