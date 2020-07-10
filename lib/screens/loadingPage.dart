@@ -32,7 +32,13 @@ class LoadingPage extends StatelessWidget {
             color: ColoNames.appThemeGreen,
           ),
           Positioned(
-              right: 0, child: Image.asset('assets/images/MaskGroup1.png')),
+              right: 0,
+              child: Hero(
+                  tag: "welcomeImg",
+                  child: Image.asset(
+                    ImageNames.welcomeScreenImg,
+                    fit: BoxFit.fitHeight,
+                  ))),
           Positioned(
             bottom: MediaQuery.of(context).size.height * 0.30,
             right: MediaQuery.of(context).size.width * 0.15,

@@ -90,9 +90,12 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Positioned(
             right: 0,
-            child: Image.asset(
-              ImageNames.welcomeScreenImg,
-              fit: BoxFit.fitWidth,
+            child: Hero(
+              tag: "welcomeImg",
+              child: Image.asset(
+                ImageNames.welcomeScreenImg,
+                fit: BoxFit.fitWidth,
+              ),
             ),
           ),
           Positioned(
@@ -230,15 +233,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ? () {
                   if (_formKey.currentState.validate()) {
                     print("validated");
-                    // Navigator.pushNamed(context, Constants.ROUTE_LOADING);
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        duration: Duration(milliseconds: 350),
-                        type: PageTransitionType.upToDown,
-                        child: LoadingPage(),
-                      ),
-                    );
+                    Navigator.pushNamed(context, Constants.ROUTE_LOADING);
+                    // Navigator.push(
+                    //   context,
+                    //   PageTransition(
+                    //     duration: Duration(milliseconds: 350),
+                    //     type: PageTransitionType.upToDown,
+                    //     child: LoadingPage(),
+                    //   ),
+                    // );
                   }
                 }
               : null,
