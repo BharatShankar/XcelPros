@@ -12,44 +12,69 @@ class BedRoom extends StatefulWidget {
   _BedRoomState createState() => _BedRoomState();
 }
 
-class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
-  static const FACE_LEFT_ANGLE = -pi / 2 * 1000;
-  static const FACE_RIGHT_ANGLE = pi / 2 * 1000;
-
+class _BedRoomState extends State<BedRoom> with TickerProviderStateMixin {
   AnimationController _controller;
-  Animation _animation;
-  double WIDTH_OF_LIGHTS_MENU;
-  double _angle = FACE_RIGHT_ANGLE;
-
+  Animation<Offset> _offsetAnimation;
+  double spaceBetwColors = 05.0;
+  AnimationController _lampController;
+  Animation<Offset> _lampOffset;
+  double slideValue = 0.0;
+  double gradientSpace = 0.0;
   @override
   void initState() {
     super.initState();
-
-    _controller =
-        new AnimationController(duration: new Duration(seconds: 1), vsync: this)
-          ..addListener(() {
-            this.setState(() {});
-          })
-          ..addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
-              print("animation completed");
-              WIDTH_OF_LIGHTS_MENU = 1.0;
-              // _controller.reverse();
-              // _angle = FACE_LEFT_ANGLE;
-            } else if (status == AnimationStatus.dismissed) {
-              _controller.forward();
-              _angle = FACE_RIGHT_ANGLE;
-            }
-          });
-
-    Tween _tween = new AlignmentTween(
-      end: new Alignment(-1.0, 0.0),
-      begin: new Alignment(1.0, 0.0),
-    );
-
-    _animation = _tween.animate(_controller);
-
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset(1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticIn,
+    ));
+    _controller.addStatusListener(animationStatusListener);
     _controller.forward();
+
+    lampAnimation();
+  }
+
+  void lampAnimation() {
+    _lampController = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    )..repeat(reverse: true);
+    _lampOffset = Tween<Offset>(
+      begin: Offset(0.0, -0.2),
+      end: const Offset(0.0, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _lampController,
+      curve: Curves.bounceIn,
+    ));
+    _lampController.addStatusListener(lampStatusListener);
+    _lampController.forward();
+  }
+
+  void lampStatusListener(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      setState(() {
+        spaceBetwColors = 19.0;
+        slideValue = 1.0;
+        gradientSpace = MediaQuery.of(context).size.width * 0.04;
+      });
+    } else if (status == AnimationStatus.dismissed) {
+      //_controller.forward();
+      // _controller.reverse();
+    }
+  }
+
+  void animationStatusListener(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      // _controller.reverse();
+    } else if (status == AnimationStatus.dismissed) {
+      //_controller.forward();
+    }
   }
 
   double _value = 1;
@@ -90,6 +115,7 @@ class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _controller.dispose();
+    _lampController.dispose();
     super.dispose();
   }
 
@@ -139,10 +165,13 @@ class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
                   Positioned(
                     right: MediaQuery.of(context).size.width * 0.08,
                     top: MediaQuery.of(context).size.height * 0.07,
-                    child: Image.asset(
-                      "assets/images/lamp.png",
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      width: MediaQuery.of(context).size.width * 0.3,
+                    child: SlideTransition(
+                      position: _lampOffset,
+                      child: Image.asset(
+                        "assets/images/lamp.png",
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.3,
+                      ),
                     ),
                   ),
                   Positioned(
@@ -155,17 +184,21 @@ class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
                   Positioned(
                       right: MediaQuery.of(context).size.width * 0.2,
                       top: MediaQuery.of(context).size.height * 0.179,
-                      child: Container(
-                        height: 11,
-                        width: 20,
-                        decoration: new BoxDecoration(
-                            color: bedRoomService.selectedColor.withOpacity(
-                                bedRoomService?.intensityValue ?? 1.0),
-                            borderRadius: new BorderRadius.only(
-                              bottomLeft: const Radius.circular(20.0),
-                              bottomRight: const Radius.circular(20.0),
-                            )),
-                      )),
+                      child: _lampController.isCompleted
+                          ? Container(
+                              height: 11,
+                              width: 20,
+                              decoration: new BoxDecoration(
+                                  color: bedRoomService.selectedColor
+                                      .withOpacity(
+                                          bedRoomService?.intensityValue ??
+                                              1.0),
+                                  borderRadius: new BorderRadius.only(
+                                    bottomLeft: const Radius.circular(20.0),
+                                    bottomRight: const Radius.circular(20.0),
+                                  )),
+                            )
+                          : Container()),
                   Positioned(
                     top: MediaQuery.of(context).size.width * 0.3,
                     left: MediaQuery.of(context).size.width * 0.07,
@@ -183,61 +216,68 @@ class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
                           margin: EdgeInsets.symmetric(vertical: 20.0),
                           height: MediaQuery.of(context).size.width * 0.12,
                           width: MediaQuery.of(context).size.width - 20,
-                          child: FractionallySizedBox(
-                              heightFactor: 1,
-                              widthFactor: _animation.isCompleted ? 1 : 0.43,
-                              alignment: _animation.value,
-                              child: Transform.rotate(
-                                angle: _angle,
-                                child: new ListView(
+                          child: new Stack(
+                            //scrollDirection: Axis.horizontal,
+                            children: <Widget>[
+                              SlideTransition(
+                                position: _offsetAnimation,
+                                child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
-                                  children: <Widget>[
-                                    lightsCollectionView(
-                                        imagesOfLights[0], typesOfLights[0]),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          Image.asset(
-                                            imagesOfLights[1],
-                                            color: Colors.white,
-                                          ),
-                                          Text(
-                                            typesOfLights[1],
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          )
-                                        ],
+                                  child: Row(
+                                    children: <Widget>[
+                                      lightsCollectionView(
+                                          imagesOfLights[0], typesOfLights[0]),
+                                      SizedBox(
+                                        width: 10,
                                       ),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.4,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.02),
-                                          color: ColoNames.buttonGreenColor),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    lightsCollectionView(
-                                        imagesOfLights[2], typesOfLights[2]),
-                                    SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.3,
-                                    )
-                                  ],
+                                      Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: <Widget>[
+                                            Image.asset(
+                                              imagesOfLights[1],
+                                              color: Colors.white,
+                                            ),
+                                            Text(
+                                              typesOfLights[1],
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.4,
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.12,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.02),
+                                            color: ColoNames.buttonGreenColor),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      lightsCollectionView(
+                                          imagesOfLights[2], typesOfLights[2]),
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.3,
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ))))
+                              )
+                            ],
+                          )))
                 ],
               ),
               Container(
@@ -382,27 +422,24 @@ class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
     return Wrap(
       children: <Widget>[
         selectClorLight(0, listOfColors[0], bedRoomService),
-        SizedBox(
-          width: 15,
-        ),
+        spaceOfColors(),
         selectClorLight(1, listOfColors[1], bedRoomService),
-        SizedBox(
-          width: 15,
-        ),
+        spaceOfColors(),
         selectClorLight(2, listOfColors[2], bedRoomService),
-        SizedBox(
-          width: 15,
-        ),
+        spaceOfColors(),
         selectClorLight(3, listOfColors[3], bedRoomService),
-        SizedBox(
-          width: 15,
-        ),
+        spaceOfColors(),
         selectClorLight(4, listOfColors[4], bedRoomService),
-        SizedBox(
-          width: 15,
-        ),
+        spaceOfColors(),
         selectClorLight(5, listOfColors[5], bedRoomService),
       ],
+    );
+  }
+
+  Widget spaceOfColors() {
+    return AnimatedContainer(
+      duration: Duration(seconds: 1),
+      width: spaceBetwColors,
     );
   }
 
@@ -420,15 +457,17 @@ class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
         Row(
           children: <Widget>[
             scenesGrandients(_colors, "Birthday"),
+            spaceOfGradient(),
             scenesGrandients(_secondBtnColors, "Party"),
           ],
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.width * 0.04,
+          height: gradientSpace,
         ),
         Row(
           children: <Widget>[
             scenesGrandients(_thirdBtnColors, "Relax"),
+            spaceOfGradient(),
             scenesGrandients(_fourthBtnColors, "Fun"),
           ],
         ),
@@ -436,38 +475,40 @@ class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
     );
   }
 
+  Widget spaceOfGradient() {
+    return AnimatedContainer(
+      duration: Duration(seconds: 1),
+      width: gradientSpace,
+    );
+  }
+
   Widget scenesGrandients(List<Color> colours, String title) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: MediaQuery.of(context).size.width * 0.12,
-        width: MediaQuery.of(context).size.width * 0.4,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-                MediaQuery.of(context).size.width * 0.015),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 3.0,
-              ),
-            ],
-            gradient: LinearGradient(
-              colors: colours,
-              stops: _stops,
-            )),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Image.asset("assets/images/surface1.png"),
-            Text(
-              title,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold),
-            )
+    return Container(
+      height: MediaQuery.of(context).size.width * 0.12,
+      width: MediaQuery.of(context).size.width * 0.4,
+      decoration: BoxDecoration(
+          borderRadius:
+              BorderRadius.circular(MediaQuery.of(context).size.width * 0.015),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey,
+              blurRadius: 3.0,
+            ),
           ],
-        ),
+          gradient: LinearGradient(
+            colors: colours,
+            stops: _stops,
+          )),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Image.asset("assets/images/surface1.png"),
+          Text(
+            title,
+            style: TextStyle(
+                color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+          )
+        ],
       ),
     );
   }
@@ -508,6 +549,7 @@ class _BedRoomState extends State<BedRoom> with SingleTickerProviderStateMixin {
         ],
       ),
       width: MediaQuery.of(context).size.width * 0.4,
+      height: MediaQuery.of(context).size.width * 0.12,
       decoration: BoxDecoration(
           borderRadius:
               BorderRadius.circular(MediaQuery.of(context).size.width * 0.02),
