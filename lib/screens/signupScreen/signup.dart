@@ -44,7 +44,9 @@ class _SignUpState extends State<SignUp> {
                 top: topSideSpace,
                 child: Row(
                   children: <Widget>[
-                    Image.asset(ImageNames.signUpGreenImage),
+                    Hero(
+                        tag: "welcomeImg",
+                        child: Image.asset(ImageNames.signUpGreenImage)),
                     FlatButton(
                         onPressed: () {
                           // Navigator.of(context).pop();

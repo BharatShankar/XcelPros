@@ -270,14 +270,16 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         FlatButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  PageTransition(
-                      alignment: Alignment.bottomCenter,
-                      curve: Curves.ease,
-                      duration: Duration(milliseconds: 400),
-                      type: PageTransitionType.size,
-                      child: SignupStateLess()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SignupStateLess()));
+              // Navigator.push(
+              //     context,
+              //     PageTransition(
+              //         alignment: Alignment.bottomCenter,
+              //         curve: Curves.ease,
+              //         duration: Duration(milliseconds: 400),
+              //         type: PageTransitionType.size,
+              //         child: SignupStateLess()));
               // Navigator.push(context, ScaleRoute(widget: SignUp()));
             },
             child: Text(
